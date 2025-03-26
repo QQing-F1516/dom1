@@ -1,34 +1,67 @@
-//使用let声明
-let task = [];
-let currentFilter = "all";
-
 //使用const声明变量
-const taskList = document.getElementById("taskList");
-const addBtn = document.getElementById("addBtn");
+const taskInput = document.getElementById('taskInput');
+const addBtn = document.getElementById('addBtn');
+const taskList = document.getElementById('taskList');
+const statusElement = document.getElementById('status');
+const sortByNameBtn = document.getElementById('sortByName');
+const sortByDateBtn = document.getElementById('sortByDate');
+let tasks = [
+    {
+        text:"fff4",createdAt: new Date(2025, 2, 14),
+    },{
+        text:"7767764",createdAt: new Date(2025, 1, 16),
+    }
+]
+ 
+function update() {
+    taskList.innerHTML = '';
+    tasks.forEach(task => {
+        const li = document.createElement('li');
+        const span = document.createElement('span');
+        span.className = 'task-text';
+        span.textContent = task.text;
 
-const taskInput = document.getElementById("taskInput");
-const stastusElement = document.getElementById("status");
-
-//使用数值类型示例
-const defaultTaskCount = 0;
-
+        const dateSpan = document.createElement('span');
+        dateSpan.className = 'task-date';
+        dateSpan.textContent = "(" + task.createdAt.toLocaleDateString() +")";
+        li.appendChild(span);
+        li.appendChild(dateSpan);
+        taskList.appendChild(li);
+    })
+    statusElement.innerHTML = `当前总任务数:  {tasks.length}`;
+}
 
 function addTask() {
-    const currentTaskCount = task.length + 1;
-    if (taskInput.value === "") {
-        alert("任务不能为空");
+    if(!taskInput.value) {
+     alert('Please enter a task');
+     return;
     }
-
-    if (){}
-    
-    const newTask = {
-        id: Date.now(),
-        text: taskInput.value,
-        completed: false,
-        createAt: new Date(),
+    const newtask = {
+     text: taskInput.value,
+     createdAt: new Date(),
+    };
+    tasks.push(newtask);
+    taskInput.value = '';
+    update()
+ }
+ addBtn.addEventListener('click', addTask);
+ taskInput.addEventListener('keypress', (event) => {
+    if(event.key === 'Enter') {
+        addTask();
     }
+ })
 
-    task.push(newTask)
+ function sortTasksByName() {
+    tasks.sort((a, b) => a. text.localeCompare(b.text));
+    update();
+ }
 
-    taskInput.value = "";
-}
+ function sortTasksByDate() {
+    tasks.sort((a, b) => a.createdAt - b.createdAt);
+    update();
+ }
+
+ sortByNameBtn.addEventListener('click', sortTasksByName);
+ sortByDateBtn.addEventListener('click', sortTasksByDate);
+ update();
+ 
