@@ -161,7 +161,84 @@
     </div>
 
     <script>
-       
+       //将16进制字符串转化为2进制字符串
+       function converHexToBin(hex) { 
+        const cleanHex = hex.trim();
+        let result = "";
+        //遍历每个字符
+        for (let i = 0; i < cleanHex.length; i++) {
+            //获取每一个16进制字符
+            const hexchar = cleanHex[i];
+            //将16进制字符转化为10进制
+            const decimal = parseInt(hexchar, 16);
+            //转化为2进制
+            let binary = decimal.toString(2);
+            //补齐四位（because 1个16进制字符等于4个2进制字符）
+            while (binary.length < 4) {
+                binary = "0" + binary;
+            }
+
+            result = result + binary;
+        }
+        return result;
+       }
+
+       //根据选择的编码格式化哈希结果
+       function formatWithEncoding(words, encoding) {
+        //如果是二进制编码，则直接返回
+        if(encoding === "Bin") {
+            //先转化成16进制，在转化成2进制
+            const hex = words.toString(CryptoJS.enc.Hex);
+            return converHexToBin(hex);
+        }
+        //其他编码格式，使用CryptoJS的编码格式
+        return words.toString(CryptoJS.enc[encoding]);
+       }
+
+       //定义支持的哈希算法
+       const algos = {};
+       algos.MD5 = CryptoJS.MD5;
+       algos.SHA1 = CryptoJS.SHA1;
+       algos.SHA256 = CryptoJS.SHA256;
+       algos.SHA224 = CryptoJS.SHA224;
+       algos.SHA512 = CryptoJS.SHA512;
+       algos.SHA384 = CryptoJS.SHA384;
+       algos.SHA3 = CryptoJS.SHA3;
+       algos.RIPEMD160 = CryptoJS.RIPEMD160;
+       //更新页面上的显示的所有哈希值
+       function updateHashes () {
+        const text = document.getElementById("clearText").value;
+        const encoding = document.getElementById("encoding").value;
+        const resultDiv = document.getElementById("hashResults");
+        resultDiv.innerHTML = "";
+        //遍历所有算法
+        for(const name in algos) {
+            if(algos.hasOwnProperty(name)) {
+                const algo = algos[name];
+                const hash = formatWithEncoding(algo(text), encoding);
+                //创建一个新的div元素，用于显示哈希值
+                const div = document.createElement("div");
+                div.className = "hash-group";
+                div.innerHTML = `
+                    <div class="hash-label">` + name + `</div>` +  
+                    `<div class="hash-value" onclick ="copyToClipboard(this)">` + hash + `</div>`;
+                    resultDiv.appendChild(div);
+            }
+        }
+       }
+       //复制到剪贴板
+       function copyToClipboard(element) {
+        const text = element.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("复制成功！");
+        }).catch((err) => {
+            alert("复制失败！" + err);
+        });
+       }
+
+       document.getElementById('clearText').addEventListener("input", updateHashes);
+
+       document.getElementById('encoding').addEventListener("change", updateHashes);
     </script>
 </body>
 
