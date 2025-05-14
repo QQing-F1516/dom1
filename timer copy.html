@@ -100,6 +100,41 @@ clearInterval(intervalId);
     </div>
 
     <script>
+        //setTimeout - 延迟执行一次
+        document.getElementById("btn1").addEventListener("click", function() {
+            document.getElementById("output1").textContent = "等待中……3秒后显示消息";
+
+            setTimeout(function() {
+                document.getElementById("output1").textContent = "QQQQQQQQQ";
+            }, 3000);
+        })
+
+        //setInterval - 重复执行
+        let intervalId
+        let counter = 0;
+
+        document.getElementById("btn2").addEventListener("click", function() {
+            if (!intervalId) {
+                return
+            }
+
+            counter = 0;
+            document.getElementById("output2").textContent = "计数" + counter;
+
+            intervalId = setInterval(function() {
+                counter++;
+                document.getElementById("output2").textContent = "计数：" + counter;
+            }, 1000)
+        })
+
+        document.getElementById("btn3").addEventListener("click", function() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            
+            document.getElementById("output2").textContent = "已停止计数";
+        })
     </script>
 </body>
 </html> 

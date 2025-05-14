@@ -334,7 +334,7 @@
         const tableBody = document.getElementById('tableBody');
         const noResults = document.getElementById('noResults');
 
-        let historyList = [] || TOSW.parse(localStorage.getItem('searchhistoryList'));
+        let historyList = [] || TOSW.parse(localStorage.getItem('searchHistory'));
 
         //防抖函数，一定时间内，多次执行，只执行一次
         function debounce(func, delay) {
@@ -402,8 +402,8 @@
             if (historyList.length > 1) {
                 historyList = historyList.slice(0, 5);
             }
-            localStorage.setItem('historyList', JSON.stringify(historyList));
-            renderHistory;
+            localStorage.setItem('searchHistory', JSON.stringify(historyList));
+            renderHistory();
         }
 
         //渲染搜索历史函数
@@ -414,7 +414,7 @@
                 historyItem.className = 'history-item';
 
                 const textSpan = document.createElement('span');
-                textSpan.className = 'item';
+                textSpan.textContent = item;
                 textSpan.style.flexGrow = 1;
                 textSpan.style.cursor = 'pointer';
 
@@ -442,7 +442,7 @@
         function deleteHistory(keyword) {
             //
             historyList = historyList.filter(item => item !== keyword);
-            localStorage.setItem('searchHiatory', JSON.stringify(historyList));
+            localStorage.setItem('searchHistory', JSON.stringify(historyList));
             renderHistory();
             if (historyList.length === 0) {
                 searchHistory.style.display = 'none';
@@ -453,7 +453,7 @@
             if (e.key === 'Enter') {
                 const keyword = this.value.trim();
                 if (keyword) {
-                    addHistory(keyword);
+                    addToHistory(keyword);
                 }
             }
         })
@@ -461,7 +461,7 @@
         searchInput.addEventListener('foucus', function () {
             const keyword = this.value.trim();
             if (keyword) {
-                addHistory(keyword);
+                addToHistory(keyword);
             }
         })
         //搜索框获取焦点时显示历史纪录
@@ -478,7 +478,7 @@
             }
         })
         //定义一个数组为：从本地存储获取搜索历史的数据或者为空数组
-        let history = JSON.parse(localStorage.getItem('history')) || [];
+        let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
         //搜索框输入事件
         searchInput.addEventListener('input', debounce(
             function () {
