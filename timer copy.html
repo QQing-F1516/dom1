@@ -114,7 +114,7 @@ clearInterval(intervalId);
         let counter = 0;
 
         document.getElementById("btn2").addEventListener("click", function() {
-            if (!intervalId) {
+            if (intervalId) {
                 return
             }
 
